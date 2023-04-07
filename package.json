@@ -1,0 +1,26 @@
+{
+  "name": "homework-central-ql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "install": "yarn install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource-mongodb": "^0.5.4",
+    "apollo-server": "^3.12.0",
+    "apollo-server-express": "^3.12.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "graphql-scalars": "^1.21.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.2.0",
+    "nuxt-graphql-server": "^1.2.2",
+    "uuid": "^9.0.0"
+  }
+}

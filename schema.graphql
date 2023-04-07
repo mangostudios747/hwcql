@@ -1,0 +1,72 @@
+  scalar EmailAddress
+  scalar DateTime
+  scalar JWT
+
+  type Book {
+    title: String
+    author: String
+  }
+
+  type User {
+    username: String!
+    email: EmailAddress!
+    _id: ID!
+    password: String!
+    contexts: [Context]
+    inbox: List
+  }
+
+  type Context {
+    _id: ID!
+    name: String!
+    subjects: [Subject]
+  }
+
+  type Subject {
+    collections: [Collection]
+    projects: [Project]
+  }
+
+  type Collection {
+    subcollections: [Collection]
+    projects: [Project]
+  }
+
+  type Project {
+    tasks: [Task]
+    name: String!
+    status: TaskStatus
+    due: DateTime
+  }
+
+  type List {
+    tasks: [Task]
+    name: String!
+  }
+
+  type Task {
+    name: String!
+    status: TaskStatus!
+    due: DateTime
+    scheduledFor: DateTime
+  }
+
+  enum TaskStatus {
+    TODO
+    IN_PROGRESS
+    CANCELED
+    DONE
+  }
+
+  # The "Query" type is special: it lists all of the available queries that
+  # clients can execute, along with the return type for each. In this
+  # case, the "books" query returns an array of zero or more Books (defined above).
+  type Query {
+    me: User
+    books: [Book]
+  }
+
+  type Mutation {
+    login(email: EmailAddress!, password: String!): JWT
+    register(email: EmailAddress!, password: String!, username: String!): JWT
+  }
