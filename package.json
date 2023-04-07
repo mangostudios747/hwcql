@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "install": "yarn install"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

@@ -12,7 +12,6 @@ const cors = require('cors')
 const Users = require('./data-sources/users.js')
 
 const client = new MongoClient(process.env.MONGO_URL)
-console.log(process.env.JWT_SECRET)
 client.connect()
 
 const books = [
@@ -102,7 +101,7 @@ async function startApolloServer(typeDefs, resolvers) {
     })
     const app = express();
     await server.start();
-    app.use(cors({origin:'http://localhost:3000', credentials: true}))
+    app.use(cors({origin:['http://localhost:3000', "https://hwc.vercel.app/"], credentials: true}))
     app.use((req, res, next)=>{
         console.log(req.path)
         next()
@@ -110,9 +109,14 @@ async function startApolloServer(typeDefs, resolvers) {
     server.applyMiddleware({ app, path: '/', cors: false });
 
 
-    app.listen(4000, () => {
-        console.log(`🚀 Server is listening on port ${4000}${server.graphqlPath}`);
+    const listener = app.listen(process.env.PORT, () => {
+        console.log(`🚀 Server is listening on port ${process.env.PORT}${server.graphqlPath}`);
     })
+    //nginx uses a 650 second keep-alive timeout on GAE. Setting it to a bit more here to avoid a race condition between the two timeouts.
+    listener.keepAliveTimeout = 700000; 
+
+//ensure the headersTimeout is set higher than the keepAliveTimeout due to this nodejs regression bug: https://github.com/nodejs/node/issues/27363
+    listener.headersTimeout = 701000; 
 }
 
 startApolloServer(typeDefs, resolvers);
