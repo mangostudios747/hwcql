@@ -101,15 +101,16 @@ async function startApolloServer(typeDefs, resolvers) {
     })
     const app = express();
     await server.start();
-    app.use(cors({origin:['http://localhost:3000', "https://hwc.vercel.app/"], credentials: true}))
+    app.use(cors({origin:['http://localhost:3000', "https://hwc.vercel.app"], credentials: true}))
+    console.log("tis the updated version!!")
     app.use((req, res, next)=>{
-        console.log(req.path)
+        console.log(req.path, " from ", req.origin)
         next()
     })
-    server.applyMiddleware({ app, path: '/', cors: false });
+    server.applyMiddleware({ app, path: '/', cors: false }); 
 
 
-    const listener = app.listen(process.env.PORT, () => {
+    const listener = app.listen(process.env.PORT, () => { 
         console.log(`🚀 Server is listening on port ${process.env.PORT}${server.graphqlPath}`);
     })
     //nginx uses a 650 second keep-alive timeout on GAE. Setting it to a bit more here to avoid a race condition between the two timeouts.
