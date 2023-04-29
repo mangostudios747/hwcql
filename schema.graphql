@@ -11,7 +11,8 @@
     username: String!
     email: EmailAddress!
     _id: ID!
-    password: String!
+    password: String!,
+    emailVerified: Boolean!
     contexts: [Context]
     inbox: List
   }

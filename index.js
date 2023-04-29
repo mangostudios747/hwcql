@@ -37,7 +37,6 @@ async function startApolloServer(typeDefs, resolvers) {
             
             // Try to retrieve a user with the token
             const user = await getUser(token, client);
-
             // Add the user to the context
             return { user };
         },
