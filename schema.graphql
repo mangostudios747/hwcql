@@ -59,6 +59,11 @@
     DONE
   }
 
+
+  type AuthResponse {
+    token: JWT
+    error: String
+  }
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
@@ -67,7 +72,9 @@
     books: [Book]
   }
 
+
   type Mutation {
-    login(email: EmailAddress!, password: String!): JWT
-    register(email: EmailAddress!, password: String!, username: String!): JWT
+    login(email: EmailAddress!, password: String!): AuthResponse
+    register(email: EmailAddress!, password: String!, username: String!): AuthResponse
+    verifyEmail(token: JWT!): AuthResponse
   }
