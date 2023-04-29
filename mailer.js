@@ -11,7 +11,7 @@ const mailTransport = nodemailer.createTransport({
 
 async function sendVerificationEmail(to, token, host){
     console.info(`Sending email to ${to}.`)
-    const link = "http://" + host + "/verify?id=" + token;
+    const link = host + "/verify?id=" + token;
     const mail = {
         from: 'tango@frozenmango747.com',
         to,

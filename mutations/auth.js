@@ -3,8 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
 const client = require('../mongo')
 const { sendVerificationEmail } = require('../mailer.js')
+
 function getToken(uid) {
     return jwt.sign({ _id: uid }, process.env.JWT_SECRET, { expiresIn: '1h' })
+}
+
+function getVerificationToken(uid){
+    return jwt.sign({ _id: uid, mim: process.env.MIM_SECURITY }, process.env.JWT_SECRET, { })
 }
 
 async function getUser(token, client) {
@@ -42,9 +47,12 @@ module.exports = {
         login: async (_, { email, password }, { dataSources: { users } }) => {
             const user = await users.getUserByEmail(email);
             if (user && checkPassword(password, user.passwordHash)) {
+                if (!user.emailVerified){
+                    return {error: "emailUnverified"}
+                }
                 return getToken(user._id)
             }
-            else return null
+            else return {error: "incorrectCredentials"}
         },
         register: async (_, { email, password, username }, { dataSources: { users } }) => {
             const exists = await users.getUserByEmail(email);
@@ -56,7 +64,8 @@ module.exports = {
                 const doc = createNewUser(email, username, password)
                 await client.db().collection("users").insertOne(doc)
                 // todo: send verification email
-
+                const verificationToken = getVerificationToken(doc._id)
+                sendVerificationEmail(doc.email, verificationToken, process.env.HOST)
                 return getToken(doc._id)
             }
         }
