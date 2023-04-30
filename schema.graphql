@@ -63,6 +63,7 @@
   type AuthResponse {
     token: JWT
     error: String
+    success: Boolean
   }
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
@@ -77,4 +78,8 @@
     login(email: EmailAddress!, password: String!): AuthResponse
     register(email: EmailAddress!, password: String!, username: String!): AuthResponse
     verifyEmail(token: JWT!): AuthResponse
+    sendResetPasswordEmail(email: EmailAddress!): AuthResponse
+    resetPassword(token: JWT!, newPassword: String!): AuthResponse
+    changePassword(oldPassword: String!, newPassword: String!): AuthResponse
+    changeUsername(newUsername: String!): AuthResponse
   }

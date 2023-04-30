@@ -2,7 +2,8 @@ const { v4: uuidv4 } = require("uuid")
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
 const client = require('../mongo')
-const { sendVerificationEmail } = require('../mailer.js')
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../mailer.js')
+const success = true
 
 function getToken(uid) {
     return jwt.sign({ _id: uid }, process.env.JWT_SECRET, { expiresIn: '1h' })
@@ -50,7 +51,7 @@ module.exports = {
                 if (!user.emailVerified) {
                     return { error: "emailUnverified" }
                 }
-                return { token: getToken(user._id) }
+                return { token: getToken(user._id), success }
             }
             else return { error: "incorrectCredentials" }
         },
@@ -63,10 +64,10 @@ module.exports = {
             const doc = createNewUser(email, username, password)
             await client.db().collection("users").insertOne(doc)
             const verificationToken = getVerificationToken(doc._id)
-            await sendVerificationEmail(doc.email, verificationToken, process.env.HOST)
+            await sendVerificationEmail(doc.email, verificationToken)
             return {token: getToken(doc._id)}
         },
-        verifyEmail: async (_, { token }, { dataSources: { users } }) => {
+        verifyEmail: async (_, { token }) => {
             // decode the jwt
             const { mim, _id } = jwt.verify(token, process.env.JWT_SECRET)
             // check the MIM password
@@ -75,8 +76,26 @@ module.exports = {
             // update the user's email verification status
             await client.db().collection("users").updateOne({ _id }, { $set: { emailVerified: true } })
             // generate a login token
-            return {token: getToken(_id)}
+            return {token: getToken(_id), success}
             // send response
+        },
+        sendResetPasswordEmail: async (_, { email }, { dataSources: { users } }) => {
+            // generate a unique token for the user
+            const user = await users.getUserByEmail(email);
+            if (!user) return { error: "UserNotFound" }
+            const token = getVerificationToken(user._id);
+            await sendPasswordResetEmail(user.email, token)
+            return { success }
+        },
+        resetPassword: async (_, { token, newPassword }) => {
+            // decode the jwt
+            const { mim, _id } = jwt.verify(token, process.env.JWT_SECRET)
+            // check the MIM password
+            // if incorrect call error
+            if (mim !== process.env.MIM_SECURITY) { return { error: "tokenNotSecure" } }
+            // update the passwordHash
+            await client.db().collection("users").updateOne({ _id }, { $set: { passwordHash: hashPassword(newPassword) } })
+            return { token: getToken(_id), success }
         }
     }
 }

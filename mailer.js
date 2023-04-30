@@ -8,16 +8,8 @@ const mailTransport = nodemailer.createTransport({
 
 });
 
-
-async function sendVerificationEmail(to, token, host){
-    console.info(`Sending email to ${to}.`)
-    const link = host + "/verify?id=" + token;
-    const mail = {
-        from: 'tango@frozenmango747.com',
-        to,
-        subject: 'test',
-        html: `please click this link to <a href="${link}">verify your email.</a>`
-    };
+async function sendEmail(mail){
+    console.info(`Sending email to ${mail.to}.`)
     await new Promise((resolve, reject) => {
         // verify connection configuration
         mailTransport.verify(function (error, success) {
@@ -44,6 +36,30 @@ async function sendVerificationEmail(to, token, host){
     });
 }
 
+
+async function sendVerificationEmail(to, token){
+    const link = process.env.HOST + "/verify?id=" + token;
+    const mail = {
+        from: 'tango@frozenmango747.com',
+        to,
+        subject: 'Verify Your Email',
+        html: `please click this link to <a href="${link}">verify your email.</a>`
+    };
+    sendEmail(mail)
+}
+
+async function sendPasswordResetEmail(to, token){
+    const link = process.env.HOST + "/reset-password?id=" + token;
+    const mail = {
+        from: 'tango@frozenmango747.com',
+        to,
+        subject: 'Reset Your Password',
+        html: `please click this link to <a href="${link}">reset your password.</a>`
+    };
+    sendEmail(mail)
+}
+
 module.exports = {
-    sendVerificationEmail
+    sendVerificationEmail,
+    sendPasswordResetEmail
 }
