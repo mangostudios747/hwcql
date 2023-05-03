@@ -80,6 +80,7 @@
     verifyEmail(token: JWT!): AuthResponse
     sendResetPasswordEmail(email: EmailAddress!): AuthResponse
     resetPassword(token: JWT!, newPassword: String!): AuthResponse
+    deleteAccount(password: String!): AuthResponse
     changePassword(oldPassword: String!, newPassword: String!): AuthResponse
     changeUsername(newUsername: String!): AuthResponse
   }

@@ -96,6 +96,17 @@ module.exports = {
             // update the passwordHash
             await client.db().collection("users").updateOne({ _id }, { $set: { passwordHash: hashPassword(newPassword) } })
             return { token: getToken(_id), success }
+        },
+        deleteAccount: async (_, { password }, { user }) => {
+            // check if `user.passwordHash` matches `password`
+            if (checkPassword(password, user.passwordHash)){
+                // if so then dig into user db and DELETE
+                await client.db().collection("users").deleteOne({ _id: user._id })
+                console.log(`deleted user ${user.username}<${user._id}>`)
+                return { success }
+            }
+            // if not then return an error
+            return { error: "incorrectCredentials" }
         }
     }
 }
