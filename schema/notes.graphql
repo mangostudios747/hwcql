@@ -18,7 +18,7 @@ type Note {
     # number of minutes
     duration: Int
     endTime: DateTime
-    subNotes: [BaseNote!]
+    subNotes: [Note!]
     parentNote: Parent!
     status: TaskStatus
     dueDate: DateTime

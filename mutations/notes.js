@@ -29,11 +29,6 @@ module.exports = {
             }
             await client.db().collection("notes").insertOne(doc);
             return doc
-        },
-        async noteToTask(_, { id }, { user }){
-            const note = await client.db().collection("notes").findOne({ _id: id })
-            // TODO: make sure that the user has access to the note's space
-            
         }
     }
 }

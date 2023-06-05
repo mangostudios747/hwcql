@@ -3,7 +3,7 @@ type Space {
     owners: [User!]! # a subset of members. not stored.
     members: [SpaceMembership!]! # stored as spacememberships { owner, user id}
     _id: ID!
-    rootNotes: [BaseNote!]
+    rootNotes: [Note!]
 }
 
 type SpaceMembership {

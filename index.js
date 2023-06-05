@@ -47,19 +47,6 @@ const resolvers = {
             return await client.db().collection("notes").find({ parentNoteID: space._id }).toArray()
         }
     },
-    BaseNote: {
-        __resolveType(note) {
-            return !!note.status ? "Task" : "Note"
-        },
-        parentNote(note) {
-            console.log("hi")
-        }
-    },
-    Task: {
-        parentNote(task) {
-            console.log("hi")
-        }
-    },
     Note: {
         async parentNote(note) {
             const indicator = note.parentNoteID.split(".")[0]
@@ -78,7 +65,7 @@ const resolvers = {
             const indicator = parent._id.split(".")[0]
             switch (indicator) {
                 case "N":
-                    return parent.status ? "Task" : "Note"
+                    return "Note"
                 case "S":
                     return "Space"
             }
