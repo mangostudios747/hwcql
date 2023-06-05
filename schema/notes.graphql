@@ -1,0 +1,45 @@
+scalar DateTime
+
+enum TaskStatus {
+    TODO
+    IN_PROGRESS
+    CANCELED
+    DONE
+}
+
+union Parent = Note | Space
+
+
+type Note {
+    _id: ID!
+    title: String!
+    allDay: Boolean
+    startTime: DateTime
+    # number of minutes
+    duration: Int
+    endTime: DateTime
+    subNotes: [BaseNote!]
+    parentNote: Parent!
+    status: TaskStatus
+    dueDate: DateTime
+    space: Space
+}
+
+input NoteOptions {
+    allDay: Boolean
+    startTime: DateTime
+    duration: Int
+    parentID: ID
+    dueDate: DateTime
+    status: TaskStatus
+}
+
+extend type Query {
+    eventsBetween(startTime: DateTime, duration: Int): [Note!]
+    noteByID(id: ID!): Note
+}
+
+extend type Mutation {
+    newNote(title: String, parentID: ID!, spaceID: ID!, options: NoteOptions): Note
+    updateNote(id: ID!, options: NoteOptions!): Note
+}

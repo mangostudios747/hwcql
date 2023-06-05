@@ -1,0 +1,31 @@
+  scalar EmailAddress
+  scalar JWT
+
+  type User {
+    username: String!
+    email: EmailAddress!
+    _id: ID!
+  }
+
+
+  type AuthResponse {
+    token: JWT
+    error: String
+    success: Boolean
+  }
+  
+  type Query {
+    user(token: JWT!): User
+    me: User
+  }
+
+  type Mutation {
+    login(email: EmailAddress!, password: String!): AuthResponse
+    register(email: EmailAddress!, password: String!, username: String!): AuthResponse
+    verifyEmail(token: JWT!): AuthResponse
+    sendResetPasswordEmail(email: EmailAddress!): AuthResponse
+    resetPassword(token: JWT!, newPassword: String!): AuthResponse
+    deleteAccount(password: String!): AuthResponse
+    changePassword(oldPassword: String!, newPassword: String!): AuthResponse
+    changeUsername(newUsername: String!): AuthResponse
+  }

@@ -6,7 +6,7 @@ const { sendVerificationEmail, sendPasswordResetEmail } = require('../mailer.js'
 const success = true
 
 function getToken(uid) {
-    return jwt.sign({ _id: uid }, process.env.JWT_SECRET, { expiresIn: '1h' })
+    return jwt.sign({ _id: uid }, process.env.JWT_SECRET, { expiresIn: '48h' })
 }
 
 function getVerificationToken(uid) {
@@ -38,12 +38,22 @@ function createNewUser(email, username, password) {
         passwordHash: hashPassword(password),
         username,
         emailVerified: false,
-        _id: uuidv4()
+        _id: "U."+uuidv4()
     }
 }
 
 module.exports = {
     getUser,
+    AuthQueries: {
+        user: async (_, { token }) => {
+            const user = getUser(token, client);
+            delete user.passwordHash
+            return user
+        },
+        me: (_, __, { user }) => {
+            return user
+        }
+    },
     AuthMutations: {
         login: async (_, { email, password }, { dataSources: { users } }) => {
             const user = await users.getUserByEmail(email);

@@ -1,0 +1,26 @@
+type Space {
+    title: String!
+    owners: [User!]! # a subset of members. not stored.
+    members: [SpaceMembership!]! # stored as spacememberships { owner, user id}
+    _id: ID!
+    rootNotes: [BaseNote!]
+}
+
+type SpaceMembership {
+    space: Space
+    owner: Boolean!
+    user: User
+}
+
+extend type User {
+    spaces: [SpaceMembership] # stored as an array of space ID
+}
+
+extend type Query {
+    spaceByID(id: ID!): Space
+}
+
+extend type Mutation {
+    newSpace(title: String!): Space
+    newRootNote(space: ID!, title: String!, options: NoteOptions): Space
+}
