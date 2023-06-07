@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/server": "^4.7.2",
     "apollo-datasource-mongodb": "^0.5.4",
     "apollo-server": "^3.12.0",
     "apollo-server-express": "^3.12.0",
@@ -18,10 +19,13 @@
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.21.3",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.13.1",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.2.0",
     "nodemailer": "^6.9.1",
     "nuxt-graphql-server": "^1.2.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
   }
 }

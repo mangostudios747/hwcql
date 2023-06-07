@@ -31,6 +31,7 @@ input NoteOptions {
     duration: Int
     parentID: ID
     dueDate: DateTime
+    title: String
     status: TaskStatus
 }
 
@@ -42,4 +43,8 @@ extend type Query {
 extend type Mutation {
     newNote(title: String, parentID: ID!, spaceID: ID!, options: NoteOptions): Note
     updateNote(id: ID!, options: NoteOptions!): Note
+}
+
+type Subscription {
+    noteEdited(noteID: ID!): Note
 }

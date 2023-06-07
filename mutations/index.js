@@ -3,7 +3,7 @@ const {AuthMutations, getUser, AuthQueries} = require('./auth')
 
 const {SpacesQueries, SpacesMutations} = require('./spaces')
 
-const {Queries, Mutations} = require('./notes')
+const {Queries, Mutations, Subscriptions} = require('./notes')
 
 module.exports = {
     getUser,
@@ -17,4 +17,7 @@ module.exports = {
         ...SpacesMutations,
         ...Mutations
     },
+    Subscription: {
+        ...Subscriptions
+    }
 }

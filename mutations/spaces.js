@@ -3,6 +3,13 @@ const client = require('../mongo')
 
 module.exports = {
     SpacesQueries: {
+        async spaceByID(_, { id: space_id }, { user }){
+            const space = await client.db().collection("spaces").findOne({_id: space_id, "members.user_id": user._id})
+            if (!space) {
+                return new Error("space does not exist")
+            }
+            return space
+        }
 
     },
     SpacesMutations: {
