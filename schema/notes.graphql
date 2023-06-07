@@ -42,9 +42,14 @@ extend type Query {
 
 extend type Mutation {
     newNote(title: String, parentID: ID!, spaceID: ID!, options: NoteOptions): Note
-    updateNote(id: ID!, options: NoteOptions!): Note
+    updateNote(id: ID!, options: NoteOptions!, updateKey: ID!): Note
+}
+
+type NoteSubscription {
+    note: Note
+    updateKey: ID!
 }
 
 type Subscription {
-    noteEdited(noteID: ID!): Note
+    noteEdited(noteID: ID!): NoteSubscription
 }

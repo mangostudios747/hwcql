@@ -2,7 +2,6 @@ const { v4: uuidv4 } = require("uuid")
 const client = require('../mongo')
 const { PubSub, withFilter } = require('graphql-subscriptions')
 const pubsub = new PubSub();
-const { GraphQLID } = require('graphql')
 
 module.exports = {
     Subscriptions: {
@@ -16,7 +15,7 @@ module.exports = {
         eventsBetween(_, { startTime, duration }) {
 
         },
-        async noteByID(_, { id: note_id }) {
+        async noteByID(_, { id: note_id }, { user }) {
             const note = await client.db().collection("notes").findOne({ _id: note_id, })
             const space = await client.db().collection("spaces").findOne({ _id: note.spaceID, "members.user_id": user._id })
             if (!space) { return null }
@@ -24,13 +23,13 @@ module.exports = {
         }
     },
     Mutations: {
-        async updateNote(_, { id: note_id, options }, { user }) {
+        async updateNote(_, { id: note_id, options, updateKey }, { user }) {
             const note = await client.db().collection("notes").findOne({ _id: note_id, })
             const space = await client.db().collection("spaces").findOne({ _id: note.spaceID, "members.user_id": user._id })
             if (!space) { return null }
             // user has access
-            const { value: doc } = await client.db().collection("notes").findOneAndUpdate({ _id: note_id }, { $set: options })
-
+            const { value: doc } = await client.db().collection("notes").findOneAndUpdate({ _id: note_id }, { $set: options }, {returnDocument: "after"})
+            await pubsub.publish(`NOTE_UPDATED:${note_id}`, {noteEdited:{updateKey, note: doc}})
             return doc
         },
         async newNote(_, { title, parentID, options, spaceID }, { user }) {
