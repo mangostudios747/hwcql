@@ -23,4 +23,5 @@ extend type Query {
 extend type Mutation {
     newSpace(title: String!): Space
     newRootNote(space: ID!, title: String!, options: NoteOptions): Space
+    deleteSpace(_id: ID!, password: String!): Boolean # whether it worked or not
 }

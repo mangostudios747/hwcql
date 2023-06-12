@@ -28,4 +28,5 @@
     deleteAccount(password: String!): AuthResponse
     changePassword(oldPassword: String!, newPassword: String!): AuthResponse
     changeUsername(newUsername: String!): AuthResponse
+    changeEmail(newEmail: String!, password: String!): AuthResponse
   }

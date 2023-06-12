@@ -117,6 +117,12 @@ module.exports = {
             }
             // if not then return an error
             return { error: "incorrectCredentials" }
+        },
+        changeEmail: async (_, { newEmail, password }, { user }) => {
+            if (!checkPassword(password, user.passwordHash)) return;
+            // it's the user! update their 
+            await client.db().collection("users").updateOne({ _id }, { $set: { emailVerified: false, email: newEmail } })
+
         }
     }
 }
