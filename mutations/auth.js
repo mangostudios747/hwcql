@@ -38,7 +38,7 @@ function createNewUser(email, username, password) {
         passwordHash: hashPassword(password),
         username,
         emailVerified: false,
-        _id: "U."+uuidv4()
+        _id: "U." + uuidv4()
     }
 }
 
@@ -69,13 +69,13 @@ module.exports = {
             const exists = await users.getUserByEmail(email);
             if (!!exists) {
                 console.log(exists)
-                return {error: "accountExists"}
+                return { error: "accountExists" }
             }
             const doc = createNewUser(email, username, password)
             await client.db().collection("users").insertOne(doc)
             const verificationToken = getVerificationToken(doc._id)
             await sendVerificationEmail(doc.email, verificationToken)
-            return {token: getToken(doc._id)}
+            return { token: getToken(doc._id) }
         },
         verifyEmail: async (_, { token }) => {
             // decode the jwt
@@ -86,7 +86,7 @@ module.exports = {
             // update the user's email verification status
             await client.db().collection("users").updateOne({ _id }, { $set: { emailVerified: true } })
             // generate a login token
-            return {token: getToken(_id), success}
+            return { token: getToken(_id), success }
             // send response
         },
         sendResetPasswordEmail: async (_, { email }, { dataSources: { users } }) => {
@@ -109,7 +109,7 @@ module.exports = {
         },
         deleteAccount: async (_, { password }, { user }) => {
             // check if `user.passwordHash` matches `password`
-            if (checkPassword(password, user.passwordHash)){
+            if (checkPassword(password, user.passwordHash)) {
                 // if so then dig into user db and DELETE
                 await client.db().collection("users").deleteOne({ _id: user._id })
                 console.log(`deleted user ${user.username}<${user._id}>`)
@@ -120,9 +120,10 @@ module.exports = {
         },
         changeEmail: async (_, { newEmail, password }, { user }) => {
             if (!checkPassword(password, user.passwordHash)) return;
-            // it's the user! update their 
-            await client.db().collection("users").updateOne({ _id }, { $set: { emailVerified: false, email: newEmail } })
-
+            // it's the user! update their email address
+            await client.db().collection("users").updateOne({ _id: user._id }, { $set: { emailVerified: false, email: newEmail } });
+            await sendVerificationEmail(newEmail, getVerificationToken(user._id))
+            return { token: getToken(user._id) }
         }
     }
 }

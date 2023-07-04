@@ -22,7 +22,9 @@ type Note {
     parentNote: Parent!
     status: TaskStatus
     dueDate: DateTime
-    space: Space
+    space: Space!
+
+    order: Int!
 }
 
 input NoteOptions {
@@ -33,6 +35,8 @@ input NoteOptions {
     dueDate: DateTime
     title: String
     status: TaskStatus
+
+    order: Int
 }
 
 extend type Query {

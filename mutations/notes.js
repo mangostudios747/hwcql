@@ -16,6 +16,7 @@ module.exports = {
 
         },
         async noteByID(_, { id: note_id }, { user }) {
+            if (!user) return null
             const note = await client.db().collection("notes").findOne({ _id: note_id, })
             const space = await client.db().collection("spaces").findOne({ _id: note.spaceID, "members.user_id": user._id })
             if (!space) { return null }

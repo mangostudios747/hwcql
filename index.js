@@ -63,7 +63,7 @@ const resolvers = {
             return await client.db().collection("spaces").findOne({ _id: note.spaceID })
         },
         async subNotes({ _id }) {
-            return await client.db().collection("notes").find({ parentNoteID: _id }).toArray()
+            return await client.db().collection("notes").find({ parentNoteID: _id }).sort({"order": "asc"}).toArray()
         }
     },
     Parent: {
