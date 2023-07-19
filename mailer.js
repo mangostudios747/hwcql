@@ -48,6 +48,16 @@ async function sendVerificationEmail(to, token){
     sendEmail(mail)
 }
 
+async function sendEmailChangeNotificationEmail(to, newEmail){
+    const mail = {
+        from: 'tango@frozenmango747.com',
+        to,
+        subject: 'Your Email Address Was Changed',
+        html: `This is to notify you that your email address has been changed to ${newEmail}. <br/> If this is a mistake, please let us know immediately.`
+    };
+    sendEmail(mail)
+}
+
 async function sendPasswordResetEmail(to, token){
     const link = process.env.HOST + "/reset-password?id=" + token;
     const mail = {
@@ -61,5 +71,6 @@ async function sendPasswordResetEmail(to, token){
 
 module.exports = {
     sendVerificationEmail,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendEmailChangeNotificationEmail
 }

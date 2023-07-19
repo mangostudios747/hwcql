@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require("uuid")
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
 const client = require('../mongo')
-const { sendVerificationEmail, sendPasswordResetEmail } = require('../mailer.js')
+const { sendVerificationEmail, sendPasswordResetEmail, sendEmailChangeNotificationEmail } = require('../mailer.js')
 const success = true
 
 function getToken(uid) {
@@ -123,6 +123,7 @@ module.exports = {
             // it's the user! update their email address
             await client.db().collection("users").updateOne({ _id: user._id }, { $set: { emailVerified: false, email: newEmail } });
             await sendVerificationEmail(newEmail, getVerificationToken(user._id))
+            await sendEmailChangeNotificationEmail(user.email, newEmail)
             return { token: getToken(user._id) }
         }
     }
